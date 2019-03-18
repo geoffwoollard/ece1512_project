@@ -45,11 +45,12 @@ def read_particles(dict_list,nx,ny):
     return(particles)   
 
 def XY_from_df_batch(df_batch,nx,ny,crop_n=None):
+
     dict_list = df_batch.to_dict('records')
     x_train = read_particles(dict_list,nx,ny)
     #x_train = crop(x_train,128)
     X = x_train[:,:,:,np.newaxis]
-    if crop is not None: X = crop(X,crop_n,nx,ny) # match 128x128 in Deep Consensus
+    if crop_n is not None: X = crop(X,crop_n,nx,ny) # match 128x128 in Deep Consensus
     Y = to_categorical(df_batch['class'].values, num_classes=2,dtype='int') #https://stackoverflow.com/questions/29831489/convert-array-of-indices-to-1-hot-encoded-numpy-array
     return(X,Y)
 

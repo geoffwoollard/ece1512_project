@@ -2,7 +2,7 @@ import keras
 from keras.layers import Dense, Activation, AveragePooling2D, Dropout, Conv2D, MaxPooling2D, Flatten
 from keras.models import Sequential
 from keras.layers.normalization import BatchNormalization
-from keras.optimizers import SGD #RMSprop, Adadelta, Adam, 
+from keras.optimizers import SGD, RMSprop, Adadelta, Adam
 
 def deep_consensus_wrapper(input_shape, # 128,128,1
 	n_classes=2,
@@ -12,28 +12,34 @@ def deep_consensus_wrapper(input_shape, # 128,128,1
 	conv2d1_n=8,
 	conv2d2_k=15,
 	conv2d2_n=8,
+	
 	mp3_k=7,
 	mp3_strides=2,
 	conv2d4_k=7,
 	conv2d4_n=8,
 	conv2d5_k=7,
 	conv2d5_n=16,
+	
 	mp6_k=5,
 	mp6_strides=2,
 	conv2d7_k=3,
 	conv2d7_n=32,
 	conv2d8_k=3,
 	conv2d8_n=32,
+	
 	mp9_k=3,
 	mp9_strides=2,
 	conv2d10_k=3,
 	conv2d10_n=64,
 	conv2d11_k=3,
 	conv2d11_n=64,
+	
 	ap12_k=4,
 	ap12_strides=2,
 	dense13_n=512,
 	dropout13_rate=0.5,
+
+	optimizer=SGD()
 
 	):
 
@@ -89,7 +95,7 @@ def deep_consensus_wrapper(input_shape, # 128,128,1
 
 	#model.summary()
 
-	model.compile(optimizer=SGD(), loss=loss, metrics=metrics)
+	model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
 
 	return(model)
 

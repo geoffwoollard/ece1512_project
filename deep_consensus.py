@@ -54,8 +54,8 @@ def deep_consensus_wrapper(input_shape, # 128,128,1
 	model.add(Conv2D(conv2d2_n, kernel_size=(conv2d2_k,conv2d2_k),padding='same'))
 	# see https://stackoverflow.com/questions/34716454/where-do-i-call-the-batchnormalization-function-in-keras
 	# not sure if batch normaliztion + relu or relu + batch normaliztion
-	model.add(Activation('relu'))
 	model.add(BatchNormalization())
+	model.add(Activation('relu'))
 
 	#4
 	model.add(MaxPooling2D((mp3_k,mp3_k), strides=mp3_strides,padding='same'))
@@ -63,8 +63,8 @@ def deep_consensus_wrapper(input_shape, # 128,128,1
 	model.add(Conv2D(conv2d4_n, kernel_size=(conv2d4_k,conv2d4_k), activation='relu',padding='same'))
 	#6
 	model.add(Conv2D(conv2d5_n, kernel_size=(conv2d5_k,conv2d5_k),padding='same'))
-	model.add(Activation('relu'))
 	model.add(BatchNormalization())
+	model.add(Activation('relu'))
 
 	#7
 	model.add(MaxPooling2D((mp6_k,mp6_k), strides=mp6_strides,padding='same'))
@@ -72,8 +72,8 @@ def deep_consensus_wrapper(input_shape, # 128,128,1
 	model.add(Conv2D(conv2d7_n, kernel_size=(conv2d7_k,conv2d7_k), activation='relu',padding='same'))
 	#9
 	model.add(Conv2D(conv2d8_n, kernel_size=(conv2d8_k,conv2d8_k),padding='same'))
-	model.add(Activation('relu'))
 	model.add(BatchNormalization())
+	model.add(Activation('relu'))
 
 	#10
 	model.add(MaxPooling2D((mp9_k,mp9_k), strides=mp9_strides,padding='same'))
@@ -81,8 +81,8 @@ def deep_consensus_wrapper(input_shape, # 128,128,1
 	model.add(Conv2D(conv2d10_n, kernel_size=(conv2d10_k,conv2d10_k), activation='relu',padding='same'))
 	#12
 	model.add(Conv2D(conv2d11_n, kernel_size=(conv2d11_k,conv2d11_k),padding='same'))
-	model.add(Activation('relu'))
 	model.add(BatchNormalization())
+	model.add(Activation('relu'))
 
 	#13
 	model.add(AveragePooling2D(pool_size=(ap12_k, ap12_k), strides=ap12_strides,padding='same'))

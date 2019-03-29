@@ -14,15 +14,14 @@ def prep_model_output(model):
 	model = utils.apply_modifications(model)
 
 	# This is the output node we want to maximize.
-	filter_idx = 0
 	return(model)
 
 def visualize_activation_wrapper(model):
 	model = prep_model_output(model)
-	img = visualize_activation(model=model, layer_idx=layer_idx, filter_indices=filter_idx)
+	img = visualize_activation(model=model, layer_idx=-1, filter_indices=0)
 	return(img)
 
 def visualize_saliency_wrapper(model,seed_input):
 	model = prep_model_output(model)
-	img = visualize_saliency(model, layer_idx, filter_indices=filter_idx, seed_input=seed_input)
+	img = visualize_saliency(model=model, layer_idx=-1, filter_indices=0, seed_input=seed_input)
 	return(img)

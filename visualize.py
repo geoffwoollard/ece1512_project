@@ -22,7 +22,7 @@ def visualize_activation_wrapper(model):
 	img = visualize_activation(model=model, layer_idx=layer_idx, filter_indices=filter_idx)
 	return(img)
 
-def visualize_activation_wrapper(model,seed_input):
+def visualize_saliency_wrapper(model,seed_input):
 	model = prep_model_output(model)
 	img = visualize_saliency(model, layer_idx, filter_indices=filter_idx, seed_input=seed_input)
 	return(img)

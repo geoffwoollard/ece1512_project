@@ -3,6 +3,7 @@ from keras.layers import Dense, Activation, AveragePooling2D, Dropout, Conv2D, M
 from keras.models import Sequential
 from keras.layers.normalization import BatchNormalization
 from keras.optimizers import SGD, RMSprop, Adadelta, Adam
+import numpy as np
 
 def deep_consensus_wrapper(input_shape, # 128,128,1
 	n_classes=2,
@@ -98,4 +99,56 @@ def deep_consensus_wrapper(input_shape, # 128,128,1
 	model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
 
 	return(model)
+
+
+def deepconsensus_layers_wrapper(input_shape, # 128,128,1
+	num_hidden_layers=4,
+	n_classes=2,
+	loss='categorical_crossentropy',
+	metrics=None,
+
+	mp_k=(7,5,3,4),
+	mp_strides=(2,2,2,2),
+	conv2d1_k=(15,7,3,3),
+	conv2d2_k=(15,7,3,3),
+	conv2d1_n=(8,8,32,64),
+	conv2d2_n=(8,16,32,64),
+	pooling_type=('max','max','max','av'),
+	
+	dense13_n=512,
+	dropout13_rate=0.5,
+
+	optimizer=SGD()
+
+	):
+	assert type(num_hidden_layers) == int
+	assert np.all([len(param) == num_hidden_layers for param in (mp_k, mp_strides, conv2d1_k, conv2d2_k, conv2d1_n, conv2d2_n, pooling_type)])
+
+	if metrics is None: metrics = ['categorical_accuracy']
+
+	model = Sequential()
+
+	for h in range(num_hidden_layers):
+
+		if h == 0:
+			model.add(Conv2D(conv2d1_n[h], kernel_size=(conv2d1_k[h],conv2d1_k[h]), activation='relu',padding='same',input_shape=input_shape))
+		else:
+			model.add(Conv2D(conv2d1_n[h], kernel_size=(conv2d1_k[h],conv2d1_k[h]), activation='relu',padding='same'))
+
+		model.add(Conv2D(conv2d2_n[h], kernel_size=(conv2d2_k[h],conv2d2_k[h]),padding='same'))
+		model.add(BatchNormalization())
+		model.add(Activation('relu'))
+
+		if pooling_type[h] == 'max': pooling_func=MaxPooling2D
+		elif pooling_type[h] == 'av': pooling_func=AveragePooling2D
+		model.add(pooling_func((mp_k[h],mp_k[h]), strides=mp_strides[h],padding='same'))
+
+	model.add(Flatten())
+	model.add(Dense(dense13_n, activation='relu')) # 2097664 = 512*(8*8*64) ; AveragePooling2D size is 8*8*64=4096
+	model.add(Dropout(rate=dropout13_rate)) # note large dropout rate
+	model.add(Dense(n_classes, activation='softmax'))
+	model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
+
+	return(model)
+
 

@@ -4,6 +4,7 @@ from vis.visualization import visualize_saliency,visualize_activation
 
 
 def prep_model_output(model):
+	# https://github.com/raghakot/keras-vis/issues/119
 	# Utility to search for layer index by name. 
 	# Alternatively we can specify this as -1 since it corresponds to the last layer.
 	layer_idx = -1

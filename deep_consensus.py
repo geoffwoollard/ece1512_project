@@ -107,12 +107,12 @@ def deepconsensus_layers_wrapper(input_shape, # 128,128,1
 	loss='categorical_crossentropy',
 	metrics=None,
 
-	pool_k=(7,5,3,4),
-	pool_strides=(2,2,2,2),
 	conv2d1_k=(15,7,3,3),
 	conv2d2_k=(15,7,3,3),
 	conv2d1_n=(8,8,32,64),
 	conv2d2_n=(8,16,32,64),
+	pool_k=(7,5,3,4),
+	pool_strides=(2,2,2,2),
 	pooling_type=('max','max','max','av'),
 	
 	dense13_n=512,

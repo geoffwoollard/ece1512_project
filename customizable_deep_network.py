@@ -56,7 +56,6 @@ def build_network (blocks,input_shape, inputl_node,inputl_kernel,hiddenl_node,
   x = 0
   p = 0
   y = 0
-  model = Sequential
 
   for layer in range (blocks):
     if layer == 0:

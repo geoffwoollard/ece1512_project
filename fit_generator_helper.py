@@ -11,11 +11,15 @@ from keras.utils.np_utils import to_categorical
 
 import mrc
 
-def parse_file(fname,label):
+def parse_file(fname,label,method='all',idx_list=None):
     #fname = '/Users/gw/Documents/education/2018w/ece1512/project/P11/J85/simulated_particles.mrcs'
     #label = 0
-    header = mrc.read_header(fname)
-    df = pd.DataFrame({'fname':fname,'idx':range(header['nz']),'class':label})
+    if method == 'all':
+        header = mrc.read_header(fname)
+        df = pd.DataFrame({'fname':fname,'idx':range(header['nz']),'class':label})
+    elif method == 'idx_list':
+        assert idx_list is not None, 'supply particle indices'
+        df = pd.DataFrame({'fname':fname,'idx':idx_list,'class':label})
     return(df)
 
 def parse_files(fname_list,label_list):
@@ -44,14 +48,14 @@ def read_particles(dict_list,nx,ny):
         particle_n+=1
     return(particles)   
 
-def XY_from_df_batch(df_batch,nx,ny,crop_n=None):
+def XY_from_df_batch(df_batch,nx,ny,crop_n=None, num_classes=2):
 
     dict_list = df_batch.to_dict('records')
     x_train = read_particles(dict_list,nx,ny)
     #x_train = crop(x_train,128)
     X = x_train[:,:,:,np.newaxis]
     if crop_n is not None: X = crop(X,crop_n,nx,ny) # match 128x128 in Deep Consensus
-    Y = to_categorical(df_batch['class'].values, num_classes=2,dtype='int') #https://stackoverflow.com/questions/29831489/convert-array-of-indices-to-1-hot-encoded-numpy-array
+    Y = to_categorical(df_batch['class'].values, num_classes=num_classes,dtype='int') #https://stackoverflow.com/questions/29831489/convert-array-of-indices-to-1-hot-encoded-numpy-array
     return(X,Y)
 
 

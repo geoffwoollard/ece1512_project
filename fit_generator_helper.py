@@ -8,6 +8,7 @@ import pandas as pd
 #from keras.layers.normalization import BatchNormalization
 #from keras.optimizers import RMSprop, Adadelta, Adam, SGD
 from keras.utils.np_utils import to_categorical 
+from keras.preprocessing.image import ImageDataGenerator
 
 import mrc
 
@@ -58,8 +59,15 @@ def XY_from_df_batch(df_batch,nx,ny,crop_n=None, num_classes=2):
     Y = to_categorical(df_batch['class'].values, num_classes=num_classes,dtype='int') #https://stackoverflow.com/questions/29831489/convert-array-of-indices-to-1-hot-encoded-numpy-array
     return(X,Y)
 
+def batch_image_augment(X,Y,batch_size,rotation_range=180):
+    datagen = ImageDataGenerator(rotation_range=rotation_range)
+    it = datagen.flow(X, Y, batch_size=batch_size)
+    X,Y = it.next()
+    return(X,Y)
 
-def image_loader(df,batch_size,**kwargs):
+
+
+def image_loader(df,batch_size,do_augment=False,**kwargs):
     
     L = df.shape[0]
     while True: #this line is just to make the generator infinite, keras needs that
@@ -70,6 +78,7 @@ def image_loader(df,batch_size,**kwargs):
         while batch_start < L:
             limit = min(batch_end,L)
             X, Y = XY_from_df_batch(df.iloc[batch_start:limit],**kwargs)
+            if do_augment: X,Y = batch_image_augment(X,Y,batch_size=limit-batch_start)
             yield (X,Y) #a tuple with two numpy arrays with batch_size samples 
             batch_start += batch_size   
             batch_end += batch_size

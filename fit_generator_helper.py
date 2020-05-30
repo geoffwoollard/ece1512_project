@@ -49,14 +49,19 @@ def read_particles(dict_list,nx,ny):
         particle_n+=1
     return(particles)   
 
-def XY_from_df_batch(df_batch,nx,ny,crop_n=None, num_classes=2):
+def XY_from_df_batch(df_batch,nx,ny,crop_n=None, num_classes=2, do_1to3channel=False):
 
     dict_list = df_batch.to_dict('records')
     x_train = read_particles(dict_list,nx,ny)
     #x_train = crop(x_train,128)
-    X = x_train[:,:,:,np.newaxis]
+    if do_1to3channel:
+        X = np.stack([x_train]*3, -1)
+        Y = df_batch['class'].values # https://stackoverflow.com/questions/49392972/error-when-checking-target-expected-dense-3-to-have-shape-3-but-got-array-wi
+    else:
+        X = x_train[:,:,:,np.newaxis]
+        Y = to_categorical(df_batch['class'].values, num_classes=num_classes,dtype='int') #https://stackoverflow.com/questions/29831489/convert-array-of-indices-to-1-hot-encoded-numpy-array
+
     if crop_n is not None: X = crop(X,crop_n,nx,ny) # match 128x128 in Deep Consensus
-    Y = to_categorical(df_batch['class'].values, num_classes=num_classes,dtype='int') #https://stackoverflow.com/questions/29831489/convert-array-of-indices-to-1-hot-encoded-numpy-array
     return(X,Y)
 
 def batch_image_augment(X,Y,batch_size,rotation_range=180):
@@ -65,7 +70,10 @@ def batch_image_augment(X,Y,batch_size,rotation_range=180):
     X,Y = it.next()
     return(X,Y)
 
-
+def XY_to_3channel(X,Y):
+  X3 = np.stack([X[:,:,:,0]]*3, -1)
+  Y3 = np.argmax(Y,axis=1)
+  return(X3,Y3)
 
 def image_loader(df,batch_size,do_augment=False,**kwargs):
     
